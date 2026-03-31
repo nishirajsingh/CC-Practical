@@ -16,7 +16,7 @@
       }
     ],
     "java": "import java.util.*;\n\nclass MinStack\n{\n    public Stack<Integer> stack;\n    int cap;\n    int minVal;\n    public MinStack(int size)\n    {\n        this.stack= new Stack<>();\n        this.minVal=Integer.MAX_VALUE;\n        this.cap=size;\n    }\n    public void push(int val)\n    {\n        if(stack.size()==cap)\n        {\n            System.out.println(\"overflow\");\n            return;\n        }\n        if (stack.isEmpty())\n        {\n            stack.push(val);\n            minVal=val;\n            System.out.println(\"Pushed \"+ val);\n        }\n        else if (val>=minVal)\n        {\n            stack.push(val);\n            System.out.println(\"Pushed \"+ val);\n        }\n        else\n        {\n            int Encode=(2*val)-minVal;\n            stack.push(Encode);\n            minVal=val;\n            System.out.println(\"Pushed \"+ val);\n        }\n\n    }\n    public int pop()\n    {\n        if (stack.isEmpty())\n        {\n            return -1;\n        }\n\n        int top=stack.pop();\n        \n        if (top>=minVal)\n        {\n            return top;\n        }\n        else\n        {\n            int originalMin=minVal;\n            int prevMin= 2*minVal-top;\n            minVal=prevMin;\n            return originalMin;\n        }\n\n    }\n    public int peek()\n    {\n        if (stack.isEmpty())\n        {\n            return -1;\n        }\n\n        int top=stack.peek();\n       \n        if(top>=minVal)\n        {\n            return top;\n        }\n        else\n        {\n            return minVal;\n        }\n    }\n    public int getMin()\n    {\n        if (stack.isEmpty())\n        {\n            return -1;\n        }\n        else\n        {\n            return minVal;\n        }\n\n    }\n\n}\n\npublic class Main\n{\n    public static void main(String[] args)\n    {\n        \n        Scanner sc= new Scanner(System.in);\n        int N= sc.nextInt();\n        MinStack st=new MinStack(N);\n        \n        while(true)\n        {\n        int op= sc.nextInt();\n        switch (op)\n        {\n            case 1:\n                int val=sc.nextInt();\n                st.push(val);\n                break;\n            case 2:\n                int res=st.pop();\n                if(res==-1)\n                {\n                    System.out.println(\"underflow\");\n                }\n                break;\n            case 3:\n                int x=st.peek();\n                System.out.println(\"Top: \"+x);\n                break;\n            case 4:\n                int y= st.getMin();\n                System.out.println(\"Min: \"+y);\n                break;\n            case 5:\n                System.out.println(\"Exit\");\n                break;\n        }\n    }\n    }\n}\n",
-    "python": "# Python version not available for this problem in the repository."
+    "python": "class MinStack:\n    def __init__(self):\n        self.stack = []\n        self.min_stack = []\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)\n\n    def pop(self) -> None:\n        if self.stack:\n            if self.stack[-1] == self.min_stack[-1]:\n                self.min_stack.pop()\n            self.stack.pop()\n\n    def top(self) -> int:\n        if self.stack:\n            return self.stack[-1]\n        return -1\n\n    def getMin(self) -> int:\n        if self.min_stack:\n            return self.min_stack[-1]\n        return -1"
   },
   {
     "id": 2,
@@ -35,7 +35,7 @@
       }
     ],
     "java": "import java.util.*;\n\nclass CircularQueue\n{\n    int[] arr;\n    int rear;\n    int front;\n    int count;\n    int cap;\n    public CircularQueue(int k)\n    {\n        this.cap=k;\n        arr=new int[cap];\n        this.count=0;\n        this.rear=-1;\n        this.front=0;\n    }\n    public void enqueue(int x)\n    {\n        if(count==cap)\n        {\n            System.out.println(\"Queue Overflow\");\n            return;\n        }\n        rear= (rear+1)%cap;\n        arr[rear]=x;\n        count++;\n        System.out.println(\"Enqueued \"+x);\n    }\n    public void dequeue()\n    {\n        if(count==0)\n        {\n            System.out.println(\"Queue Underflow\");\n            return;\n        }\n        System.out.println(\"Dequeued \"+arr[front]);\n        front= (front+1)%cap;\n        count--;\n\n    }\n}\npublic class Main\n{\n    public static void main(String[] args)\n    {\n        Scanner sc= new Scanner(System.in);\n        int k= sc.nextInt();\n        CircularQueue cq= new CircularQueue(k);\n        while(sc.hasNextInt())\n        {\n            int val=sc.nextInt();\n            if(val==-1) cq.dequeue();\n            else cq.enqueue(val);\n        }\n    }\n}\n",
-    "python": "# Python version not available for this problem in the repository."
+    "python": "def eval_postfix(exp: str) -> int:\n    stack = []\n    for char in exp:\n        if char.isdigit():\n            stack.append(int(char))\n        else:\n            val1 = stack.pop()\n            val2 = stack.pop()\n            if char == '+': stack.append(val2 + val1)\n            elif char == '-': stack.append(val2 - val1)\n            elif char == '*': stack.append(val2 * val1)\n            elif char == '/': stack.append(int(val2 / val1))\n    return stack.pop()"
   },
   {
     "id": 3,
@@ -54,7 +54,7 @@
       }
     ],
     "java": "import java.util.*;\n\npublic class InfixToPostfixQueue \n{\n    public static int precedence(char op) \n    {\n        switch (op) \n        {\n            case '+':\n            case '-':\n                return 1;\n            case '*':\n            case '/':\n            case '%':\n                return 2;\n            case '^':\n                return 3;\n        }\n        return -1;\n    }\n    public static boolean isRightAssociative(char op) {\n        return (op == '^');\n    }\n\n    private static boolean isOperator(char c) {\n        return (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^');\n    }\n\n    public static String infixToPostfix(String exp) \n    {\n        Queue<Character> output = new LinkedList<>();\n        Stack<Character> st = new Stack<>();\n\n        for (int i = 0; i < exp.length(); i++) \n        {\n            char c = exp.charAt(i);\n            if (Character.isLetterOrDigit(c)) \n            {\n                output.offer(c);\n            }\n            else if (c == '(') \n            {\n                st.push(c);\n            }\n            else if (c == ')') \n            {\n                while (!st.isEmpty() && st.peek() != '(') \n                {\n                    output.offer(st.pop());\n                }\n                if (!st.isEmpty() && st.peek() == '(') \n                {\n                    st.pop();\n                } \n            }\n            else if (isOperator(c)) \n            {\n                while (!st.isEmpty() && isOperator(st.peek())) \n                {\n                    char top = st.peek();\n                    if ((precedence(top) > precedence(c)) ||\n                       (precedence(top) == precedence(c) && !isRightAssociative(c))) {\n                        output.offer(st.pop());\n                    } \n                    else \n                    {\n                        break;\n                    }\n                }\n                st.push(c);\n            }\n        }\n        while (!st.isEmpty()) \n        {\n            //if (ops.peek() == '(') {\n              //  return \"Invalid Expression\"; \n            //}\n            output.offer(st.pop());\n        }\n\n        String result = \"\";\n        while (!output.isEmpty()) {\n            result = result + output.poll()+\" \";\n        }\n\n        return result;\n    }\n\n    public static void main(String[] args) \n    {\n        Scanner sc= new Scanner(System.in);\n        String exp=sc.nextLine();\n        System.out.println(infixToPostfix(exp));\n        \n    }\n}\n",
-    "python": "# Python version not available for this problem in the repository."
+    "python": "def next_greater_element(arr):\n    res = [-1] * len(arr)\n    stack = []\n    for i in range(len(arr) - 1, -1, -1):\n        while stack and stack[-1] <= arr[i]:\n            stack.pop()\n        if stack:\n            res[i] = stack[-1]\n        stack.append(arr[i])\n    return res"
   },
   {
     "id": 4,
@@ -73,7 +73,7 @@
       }
     ],
     "java": "import java.util.*;\n\npublic class PostfixEvaluation\n{\n    public static void postfixEvaluator(String exp)\n    {\n        Stack<Integer> st=new Stack<>();\n        String[] arr= exp.split(\" \");\n        for(String x:arr)\n        {\n            try\n            {\n                int val=Integer.valueOf(x);\n                st.push(val);\n                continue;\n            }\n            catch(NumberFormatException e)\n            {\n\n            }\n            char ch=x.charAt(0);\n            if(st.size()<2)\n            {\n                System.out.println(\"Evaluation failed due to errors in the expression.\");\n                return;\n            }\n            else\n            {\n                int v1=st.pop();\n                int v2=st.pop();\n                int res=0;\n                switch(ch)\n                {\n                    case '+': res=v1+v2; break;\n                    case '*': res=v1*v2; break;\n                    case '-': res=v2-v1; break;\n\n                    case '/':\n                    if(v1==0)\n                    {\n                        System.out.println(\"Error: Division by zero.\");\n                        System.out.println(\"Evaluation failed due to errors in the expression.\");\n                        return;\n                    }\n                    res= v2/v1;\n                    break;\n\n                    case '^':\n                    res= (int) Math.pow(v2,v1);\n                    break;\n                }\n                st.push(res);\n            }\n        }\n        if(st.size()!=1)\n        {\n            System.out.println(\"Evaluation failed due to errors in the expression.\");\n            return;\n        }\n        System.out.println(st.pop());\n    }\n    public static void main(String[] args)\n    {\n        Scanner sc=new Scanner(System.in);\n        String input=sc.nextLine();\n        postfixEvaluator(input);\n    }\n}\n",
-    "python": "# Python version not available for this problem in the repository."
+    "python": "class CircularQueue:\n    def __init__(self, k: int):\n        self.q = [0] * k\n        self.k = k\n        self.front = -1\n        self.rear = -1\n\n    def enQueue(self, value: int) -> bool:\n        if self.isFull(): return False\n        if self.isEmpty(): self.front = 0\n        self.rear = (self.rear + 1) % self.k\n        self.q[self.rear] = value\n        return True\n\n    def deQueue(self) -> bool:\n        if self.isEmpty(): return False\n        if self.front == self.rear:\n            self.front = self.rear = -1\n        else:\n            self.front = (self.front + 1) % self.k\n        return True\n\n    def isEmpty(self) -> bool:\n        return self.front == -1\n\n    def isFull(self) -> bool:\n        return (self.rear + 1) % self.k == self.front"
   },
   {
     "id": 5,
@@ -92,14 +92,14 @@
       }
     ],
     "java": "import java.util.*;\n\npublic class NextGreaterElement \n{\n    public static int[] nextGreaterElement(int[] arr) \n    {\n        int n = arr.length;\n        int[] nge = new int[n];\n        Stack<Integer> stack = new Stack<>();\n\n        for (int i = n - 1; i >= 0; i--) \n        {\n            int current = arr[i];\n\n            while (!stack.isEmpty() && stack.peek() <= current) \n            {\n                stack.pop();\n            }\n\n            if (!stack.isEmpty()) \n            {\n                nge[i] = stack.peek();\n            } \n            else \n            {\n                nge[i] = -1;\n            }\n            stack.push(current);\n        }\n\n        return nge;\n    }\n\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n\n        int[] arr = new int[n];\n\n        for (int i = 0; i < n; i++) \n        {\n            arr[i] = sc.nextInt();\n        }\n\n        int[] result = nextGreaterElement(arr);\n        for(int i=0;i<n;i++)\n        {\n            System.out.println(\"NGE of \"+arr[i]+\" is \"+result[i]);\n        }\n    }\n}\n",
-    "python": "# Python version not available for this problem in the repository."
+    "python": "def precedence(op):\n    if op == '+' or op == '-': return 1\n    if op == '*' or op == '/': return 2\n    if op == '^': return 3\n    return 0\n\ndef infix_to_postfix(exp: str) -> str:\n    stack = []\n    res = []\n    for char in exp:\n        if char.isalnum():\n            res.append(char)\n        elif char == '(':\n            stack.append(char)\n        elif char == ')':\n            while stack and stack[-1] != '(':\n                res.append(stack.pop())\n            if stack: stack.pop()\n        else:\n            while stack and precedence(char) <= precedence(stack[-1]):\n                res.append(stack.pop())\n            stack.append(char)\n    while stack:\n        res.append(stack.pop())\n    return \"\".join(res)"
   },
   {
     "id": 6,
     "title": "Product of 3 Largest",
     "logicSummary": "A min-heap of size exactly 3 continually curates the top elements. Traversing the array filters standard insertions dynamically. The resulting peak elements multiply to give the outcome.",
-    "tc": "O(nlog3)\u2248O(n)",
-    "sc": "O(1)",
+    "tc": "O(nlog3)",
+    "sc": "O(1) / O(k)",
     "viva": [
       {
         "q": "Why use a min-heap instead of sorting?",
@@ -130,7 +130,7 @@
       }
     ],
     "java": "import java.util.*;\nclass Node{\n    int data;\n    Node next;\n    public Node(int x)\n    {\n        this.data=x;\n        this.next=null;\n    }\n}\n\npublic class Main\n{\n    public static Node mergeLL(Node H1, Node H2)\n    {\n        if(H1==null) return H2;\n        if(H2==null) return H1;\n        Node t1=H1;\n        Node t2=H2;\n        Node fHead;\n        if(t1.data<t2.data)\n        {\n            fHead=t1;\n            t1=t1.next;\n        }\n        else\n        {\n            fHead=t2;\n            t2=t2.next;\n        }\n        Node Temp=fHead;\n        while(t1!=null && t2!=null)\n        {\n            if(t1.data<t2.data)\n            {\n                Temp.next=t1;\n                t1=t1.next;\n            }\n        else\n            {\n                Temp.next=t2;\n                t2=t2.next;\n            }\n            Temp=Temp.next;\n        }\n        if(t1!=null) Temp.next=t1;\n        if(t2!=null) Temp.next=t2;\n        return fHead;\n    }\n    public static Node createLL(String input)\n    {\n        Node head=null;\n        Node tail= null;\n        String[] arr=input.split(\" \");\n        for(String x: arr)\n        {\n            int val= Integer.valueOf(x);\n            if(val==-1) break;\n            Node newNode= new Node(val);\n            if(head==null)\n            {\n                head=newNode;\n                tail=newNode;\n            }\n            else\n            {\n                tail.next=newNode;\n                tail=newNode;\n            }\n        }\n        return head;\n    }\n    public static void main(String[] args)\n    {\n        Scanner sc= new Scanner(System.in);\n        String line1= sc.nextLine();\n        String line2= sc.nextLine();\n        Node H1= createLL(line1);\n        Node H2= createLL(line2);\n        Node Head= mergeLL(H1,H2);\n        Node temp=Head;\n        while(temp!=null)\n        {\n            System.out.print(temp.data+ \" \");\n            temp=temp.next;\n        }\n    }\n}\n",
-    "python": "# Python version not available for this problem in the repository."
+    "python": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\ndef merge_two_lists(l1, l2):\n    dummy = ListNode()\n    curr = dummy\n    while l1 and l2:\n        if l1.val < l2.val:\n            curr.next = l1\n            l1 = l1.next\n        else:\n            curr.next = l2\n            l2 = l2.next\n        curr = curr.next\n    curr.next = l1 if l1 else l2\n    return dummy.next"
   },
   {
     "id": 8,
@@ -149,7 +149,7 @@
       }
     ],
     "java": "import java.util.*;\nclass Node\n{\n    int data;\n    Node next;\n    public Node(int x)\n    {\n        this.data=x;\n        this.next=null;\n    }\n}\n\npublic class Main\n{\n    public static int findMerge(Node H1,Node H2)\n    {\n        Node t1=H1;\n        Node t2=H2;\n        while(t1!=null && t2!=null)\n        {\n            if(t1.data==t2.data)\n            {\n                return t1.data;\n            }\n            else if(t1.data<t2.data)\n            {\n                t1=t1.next;\n            }\n            else\n            {\n                t2=t2.next;\n            }\n        }\n        return -1;\n    }\n    public static Node createLL(String input)\n    {\n        String[] arr= input.split(\" \");\n        Node head=null;\n        Node tail=null;\n        for(String x: arr)\n        {\n            int val=Integer.valueOf(x);\n            if(val==-1) break;\n\n            Node newnode= new Node(val);\n            if(head==null)\n            {\n                head=newnode;\n                tail=newnode;\n            }\n            else\n            {\n                tail.next=newnode;\n                tail=newnode;\n            }\n        }\n        return head;\n    }\n    public static void main(String[] args)\n    {\n        Scanner sc= new Scanner(System.in);\n        String line1=sc.nextLine();\n        String line2=sc.nextLine();\n\n        Node H1=createLL(line1);\n        Node H2=createLL(line2);\n\n        System.out.println(findMerge(H1,H2));\n    }\n}\n\n",
-    "python": "# Python version not available for this problem in the repository."
+    "python": "def get_intersection_node(headA, headB):\n    if not headA or not headB: return None\n    ptrA, ptrB = headA, headB\n    while ptrA != ptrB:\n        ptrA = ptrA.next if ptrA else headB\n        ptrB = ptrB.next if ptrB else headA\n    return ptrA"
   },
   {
     "id": 9,
@@ -168,7 +168,7 @@
       }
     ],
     "java": "import java.util.*;\nclass Node {\n    int data;\n    Node next;\n    Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n}\npublic class Main \n{\n    public static Node pairwiseSwap(Node head) \n    {\n        if(head==null || head.next==null) return head;\n        Node dummy = new Node(-1);\n        dummy.next = head;\n        Node prev = dummy;\n        while (prev.next != null && prev.next.next != null) \n        {\n            Node first = prev.next;\n            Node second = first.next;\n            first.next = second.next;\n            second.next = first;\n            prev.next = second;\n            prev = first;\n        }\n        return dummy.next;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String line = sc.nextLine();\n        String[] arr = line.split(\" \");\n        Node head = null, tail = null;\n        for (String x : arr) {\n            int val = Integer.valueOf(x);\n            if (val == -1)\n                break;\n            Node newNode = new Node(val);\n            if (head == null) \n            {\n                head = tail = newNode;\n            } \n            else \n            {\n                tail.next = newNode;\n                tail = newNode;\n            }\n        }\n        Node Fhead = pairwiseSwap(head);\n        Node temp = Fhead;\n        while (temp != null) \n        {\n            System.out.print(temp.data + \" \");\n            temp = temp.next;\n        }\n    }\n}\n",
-    "python": "# Python version not available for this problem in the repository."
+    "python": "def swap_pairs(head):\n    dummy = ListNode(0)\n    dummy.next = head\n    curr = dummy\n    while curr.next and curr.next.next:\n        first = curr.next\n        second = curr.next.next\n        \n        first.next = second.next\n        second.next = first\n        curr.next = second\n        curr = first\n    return dummy.next"
   },
   {
     "id": 10,
@@ -193,7 +193,7 @@
     "id": 11,
     "title": "Build BST",
     "logicSummary": "Data cascades individually from a root recursively determining left for less and right for more iteratively. Constructive balancing ensures typical log heights remain standard. Worst scenarios yield linear degradation.",
-    "tc": "O(n)",
+    "tc": "O(h) avg / O(n)",
     "sc": "O(n)",
     "viva": [
       {
@@ -326,7 +326,7 @@
     "id": 18,
     "title": "Separate Chaining",
     "logicSummary": "Colliding keys occupy the specific array index but resolve dynamically into consecutive linked structures uniformly. Traversal strictly limits checking length proportionally around overall usage metrics directly. Insertion efficiently drops into chains instantaneously natively.",
-    "tc": "O(1)",
+    "tc": "O(1) avg / O(n)",
     "sc": "O(n+k)",
     "viva": [
       {
@@ -365,7 +365,7 @@
     "title": "Trie (Search/Insert/Remove)",
     "logicSummary": "Trie inserts build node sequences correlating directly to individual characters recursively structurally precisely. Valid completions flag nodes confirming complete word alignments cleanly. Branch paths efficiently reduce string sets naturally effectively.",
     "tc": "O(L)",
-    "sc": "O(ALN)",
+    "sc": "O(A\u00d7L\u00d7N)",
     "viva": [
       {
         "q": "Why use a Trie instead of a hash table?",
@@ -383,7 +383,7 @@
     "id": 21,
     "title": "Huffman Coding",
     "logicSummary": "Weights map individually driving min-heaps constructing shortest representations dynamically effectively structurally consistently. Heaviest characters sit proportionally closest to the roots effectively. Leaf paths represent optimized bits universally.",
-    "tc": "O(nlogn)",
+    "tc": "O(n log n)",
     "sc": "O(n)",
     "viva": [
       {
@@ -402,8 +402,8 @@
     "id": 22,
     "title": "Distinct Substrings",
     "logicSummary": "Iteratively sliding structural sequences continuously populates specific branch mappings directly precisely correctly. Suffix architectures inherently evaluate duplicate patterns overlapping naturally identically universally. Finding branches resolves unique sequences proportionally clearly effectively.",
-    "tc": "O(n^2)",
-    "sc": "O(n^2)",
+    "tc": "O(n\u00b2)",
+    "sc": "O(n\u00b2)",
     "viva": [
       {
         "q": "How does a Trie improve finding distinct substrings compared to hashing?",
@@ -460,7 +460,7 @@
     "title": "Level Order Traversal",
     "logicSummary": "Queue lists establish flat linear passing accurately systematically level by level completely perfectly carefully. Popped architectures record nodes directly uniformly appropriately systematically clearly universally. Widths evaluate equivalently smoothly dynamically natively.",
     "tc": "O(n)",
-    "sc": "O(w)",
+    "sc": "O(w) max width",
     "viva": [
       {
         "q": "Why use a queue for level order traversal?",
