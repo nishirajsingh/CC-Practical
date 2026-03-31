@@ -1,0 +1,477 @@
+[
+  {
+    "id": 1,
+    "title": "MinStack (push, pop, min)",
+    "logicSummary": "A MinStack is implemented using dual stacks or maintaining pairs where one tracks standard values and the other records the minimum up to that point. Pushing and popping manipulate both structures simultaneously to ensure synchronization. This enables retrieving the minimum value at any point directly in O(1) time.",
+    "tc": "O(1)",
+    "sc": "O(n)",
+    "viva": [
+      {
+        "q": "How does MinStack ensure O(1) minimum retrieval?",
+        "a": "By maintaining a secondary stack (or pairs in a single stack) that strictly keeps track of the minimum up to that point alongside the main values."
+      },
+      {
+        "q": "What happens if we push multiple identical minimums?",
+        "a": "The minimum stack replicates the push to ensure synchronization; when a duplicate minimum pops, the secondary stack still holds the previous minimum safely."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass MinStack\n{\n    public Stack<Integer> stack;\n    int cap;\n    int minVal;\n    public MinStack(int size)\n    {\n        this.stack= new Stack<>();\n        this.minVal=Integer.MAX_VALUE;\n        this.cap=size;\n    }\n    public void push(int val)\n    {\n        if(stack.size()==cap)\n        {\n            System.out.println(\"overflow\");\n            return;\n        }\n        if (stack.isEmpty())\n        {\n            stack.push(val);\n            minVal=val;\n            System.out.println(\"Pushed \"+ val);\n        }\n        else if (val>=minVal)\n        {\n            stack.push(val);\n            System.out.println(\"Pushed \"+ val);\n        }\n        else\n        {\n            int Encode=(2*val)-minVal;\n            stack.push(Encode);\n            minVal=val;\n            System.out.println(\"Pushed \"+ val);\n        }\n\n    }\n    public int pop()\n    {\n        if (stack.isEmpty())\n        {\n            return -1;\n        }\n\n        int top=stack.pop();\n        \n        if (top>=minVal)\n        {\n            return top;\n        }\n        else\n        {\n            int originalMin=minVal;\n            int prevMin= 2*minVal-top;\n            minVal=prevMin;\n            return originalMin;\n        }\n\n    }\n    public int peek()\n    {\n        if (stack.isEmpty())\n        {\n            return -1;\n        }\n\n        int top=stack.peek();\n       \n        if(top>=minVal)\n        {\n            return top;\n        }\n        else\n        {\n            return minVal;\n        }\n    }\n    public int getMin()\n    {\n        if (stack.isEmpty())\n        {\n            return -1;\n        }\n        else\n        {\n            return minVal;\n        }\n\n    }\n\n}\n\npublic class Main\n{\n    public static void main(String[] args)\n    {\n        \n        Scanner sc= new Scanner(System.in);\n        int N= sc.nextInt();\n        MinStack st=new MinStack(N);\n        \n        while(true)\n        {\n        int op= sc.nextInt();\n        switch (op)\n        {\n            case 1:\n                int val=sc.nextInt();\n                st.push(val);\n                break;\n            case 2:\n                int res=st.pop();\n                if(res==-1)\n                {\n                    System.out.println(\"underflow\");\n                }\n                break;\n            case 3:\n                int x=st.peek();\n                System.out.println(\"Top: \"+x);\n                break;\n            case 4:\n                int y= st.getMin();\n                System.out.println(\"Min: \"+y);\n                break;\n            case 5:\n                System.out.println(\"Exit\");\n                break;\n        }\n    }\n    }\n}\n",
+    "python": "# Python version not available for this problem in the repository."
+  },
+  {
+    "id": 2,
+    "title": "Postfix Evaluation",
+    "logicSummary": "The algorithm processes symbols continuously. By utilizing a stack to hold operands, operators evaluate the topmost items directly. The final result remains as the single element in the stack upon conclusion.",
+    "tc": "O(n)",
+    "sc": "O(n)",
+    "viva": [
+      {
+        "q": "Why use a stack for postfix evaluation?",
+        "a": "A stack perfectly handles the Last-In-First-Out nature required: as operators are encountered, they must be applied to the most recently seen operands."
+      },
+      {
+        "q": "How are operands and operators handled?",
+        "a": "Operands are pushed onto the stack. Operators pop the top two operands from the stack, evaluate the result, and push the result back onto the stack."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass CircularQueue\n{\n    int[] arr;\n    int rear;\n    int front;\n    int count;\n    int cap;\n    public CircularQueue(int k)\n    {\n        this.cap=k;\n        arr=new int[cap];\n        this.count=0;\n        this.rear=-1;\n        this.front=0;\n    }\n    public void enqueue(int x)\n    {\n        if(count==cap)\n        {\n            System.out.println(\"Queue Overflow\");\n            return;\n        }\n        rear= (rear+1)%cap;\n        arr[rear]=x;\n        count++;\n        System.out.println(\"Enqueued \"+x);\n    }\n    public void dequeue()\n    {\n        if(count==0)\n        {\n            System.out.println(\"Queue Underflow\");\n            return;\n        }\n        System.out.println(\"Dequeued \"+arr[front]);\n        front= (front+1)%cap;\n        count--;\n\n    }\n}\npublic class Main\n{\n    public static void main(String[] args)\n    {\n        Scanner sc= new Scanner(System.in);\n        int k= sc.nextInt();\n        CircularQueue cq= new CircularQueue(k);\n        while(sc.hasNextInt())\n        {\n            int val=sc.nextInt();\n            if(val==-1) cq.dequeue();\n            else cq.enqueue(val);\n        }\n    }\n}\n",
+    "python": "# Python version not available for this problem in the repository."
+  },
+  {
+    "id": 3,
+    "title": "Next Greater Element (NGE)",
+    "logicSummary": "NGE uses a monotonic stack storing indices or elements decreasingly. Scanning right-to-left resolves the next larger item efficiently. Each item enters and exits the stack once, giving linear limits.",
+    "tc": "O(n)",
+    "sc": "O(n)",
+    "viva": [
+      {
+        "q": "How does the stack optimize finding the next greater element?",
+        "a": "It uses a decreasing monotonic stack, keeping track of elements looking for their next greater element. When a larger element is found, it safely pops and updates the result for the smaller elements."
+      },
+      {
+        "q": "What is the worst-case scenario for NGE?",
+        "a": "A strictly decreasing array, where every element must be pushed onto the stack and scanned entirely without finding a greater element until the end (e.g. 5, 4, 3, 2, 1)."
+      }
+    ],
+    "java": "import java.util.*;\n\npublic class InfixToPostfixQueue \n{\n    public static int precedence(char op) \n    {\n        switch (op) \n        {\n            case '+':\n            case '-':\n                return 1;\n            case '*':\n            case '/':\n            case '%':\n                return 2;\n            case '^':\n                return 3;\n        }\n        return -1;\n    }\n    public static boolean isRightAssociative(char op) {\n        return (op == '^');\n    }\n\n    private static boolean isOperator(char c) {\n        return (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^');\n    }\n\n    public static String infixToPostfix(String exp) \n    {\n        Queue<Character> output = new LinkedList<>();\n        Stack<Character> st = new Stack<>();\n\n        for (int i = 0; i < exp.length(); i++) \n        {\n            char c = exp.charAt(i);\n            if (Character.isLetterOrDigit(c)) \n            {\n                output.offer(c);\n            }\n            else if (c == '(') \n            {\n                st.push(c);\n            }\n            else if (c == ')') \n            {\n                while (!st.isEmpty() && st.peek() != '(') \n                {\n                    output.offer(st.pop());\n                }\n                if (!st.isEmpty() && st.peek() == '(') \n                {\n                    st.pop();\n                } \n            }\n            else if (isOperator(c)) \n            {\n                while (!st.isEmpty() && isOperator(st.peek())) \n                {\n                    char top = st.peek();\n                    if ((precedence(top) > precedence(c)) ||\n                       (precedence(top) == precedence(c) && !isRightAssociative(c))) {\n                        output.offer(st.pop());\n                    } \n                    else \n                    {\n                        break;\n                    }\n                }\n                st.push(c);\n            }\n        }\n        while (!st.isEmpty()) \n        {\n            //if (ops.peek() == '(') {\n              //  return \"Invalid Expression\"; \n            //}\n            output.offer(st.pop());\n        }\n\n        String result = \"\";\n        while (!output.isEmpty()) {\n            result = result + output.poll()+\" \";\n        }\n\n        return result;\n    }\n\n    public static void main(String[] args) \n    {\n        Scanner sc= new Scanner(System.in);\n        String exp=sc.nextLine();\n        System.out.println(infixToPostfix(exp));\n        \n    }\n}\n",
+    "python": "# Python version not available for this problem in the repository."
+  },
+  {
+    "id": 4,
+    "title": "Circular Queue",
+    "logicSummary": "A circular queue uses a fixed-size array and two pointers wrapping around modulo the limit. It resets to the beginning efficiently. This prevents shifting whole arrays upon removing from the front.",
+    "tc": "O(1)",
+    "sc": "O(k)",
+    "viva": [
+      {
+        "q": "What is the advantage of a circular queue over a linear one?",
+        "a": "It prevents the 'false full' condition of linear queues by allowing inserting at the freed-up front spaces dynamically using modulo arithmetic."
+      },
+      {
+        "q": "How is the 'full' condition checked?",
+        "a": "By checking if `(rear + 1) % capacity == front`. If true, the queue is mathematically full."
+      }
+    ],
+    "java": "import java.util.*;\n\npublic class PostfixEvaluation\n{\n    public static void postfixEvaluator(String exp)\n    {\n        Stack<Integer> st=new Stack<>();\n        String[] arr= exp.split(\" \");\n        for(String x:arr)\n        {\n            try\n            {\n                int val=Integer.valueOf(x);\n                st.push(val);\n                continue;\n            }\n            catch(NumberFormatException e)\n            {\n\n            }\n            char ch=x.charAt(0);\n            if(st.size()<2)\n            {\n                System.out.println(\"Evaluation failed due to errors in the expression.\");\n                return;\n            }\n            else\n            {\n                int v1=st.pop();\n                int v2=st.pop();\n                int res=0;\n                switch(ch)\n                {\n                    case '+': res=v1+v2; break;\n                    case '*': res=v1*v2; break;\n                    case '-': res=v2-v1; break;\n\n                    case '/':\n                    if(v1==0)\n                    {\n                        System.out.println(\"Error: Division by zero.\");\n                        System.out.println(\"Evaluation failed due to errors in the expression.\");\n                        return;\n                    }\n                    res= v2/v1;\n                    break;\n\n                    case '^':\n                    res= (int) Math.pow(v2,v1);\n                    break;\n                }\n                st.push(res);\n            }\n        }\n        if(st.size()!=1)\n        {\n            System.out.println(\"Evaluation failed due to errors in the expression.\");\n            return;\n        }\n        System.out.println(st.pop());\n    }\n    public static void main(String[] args)\n    {\n        Scanner sc=new Scanner(System.in);\n        String input=sc.nextLine();\n        postfixEvaluator(input);\n    }\n}\n",
+    "python": "# Python version not available for this problem in the repository."
+  },
+  {
+    "id": 5,
+    "title": "Infix to Postfix (Shunting Yard)",
+    "logicSummary": "Operands pass through to the output, and operators flow onto a stack based on precedence rules. Stronger operators resolve before weaker ones. Parentheses guide boundaries explicitly.",
+    "tc": "O(n)",
+    "sc": "O(n)",
+    "viva": [
+      {
+        "q": "Why do we need operators precedence?",
+        "a": "Precedence determines which operator should forcefully resolve (pop) before a weaker operator can be added to the stack, adhering to standardized math rules."
+      },
+      {
+        "q": "How are parentheses processed?",
+        "a": "Opening parentheses are pushed directly. Closing parentheses pop all operators until their corresponding opening parenthesis is reached."
+      }
+    ],
+    "java": "import java.util.*;\n\npublic class NextGreaterElement \n{\n    public static int[] nextGreaterElement(int[] arr) \n    {\n        int n = arr.length;\n        int[] nge = new int[n];\n        Stack<Integer> stack = new Stack<>();\n\n        for (int i = n - 1; i >= 0; i--) \n        {\n            int current = arr[i];\n\n            while (!stack.isEmpty() && stack.peek() <= current) \n            {\n                stack.pop();\n            }\n\n            if (!stack.isEmpty()) \n            {\n                nge[i] = stack.peek();\n            } \n            else \n            {\n                nge[i] = -1;\n            }\n            stack.push(current);\n        }\n\n        return nge;\n    }\n\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n\n        int[] arr = new int[n];\n\n        for (int i = 0; i < n; i++) \n        {\n            arr[i] = sc.nextInt();\n        }\n\n        int[] result = nextGreaterElement(arr);\n        for(int i=0;i<n;i++)\n        {\n            System.out.println(\"NGE of \"+arr[i]+\" is \"+result[i]);\n        }\n    }\n}\n",
+    "python": "# Python version not available for this problem in the repository."
+  },
+  {
+    "id": 6,
+    "title": "Product of 3 Largest",
+    "logicSummary": "A min-heap of size exactly 3 continually curates the top elements. Traversing the array filters standard insertions dynamically. The resulting peak elements multiply to give the outcome.",
+    "tc": "O(nlog3)\u2248O(n)",
+    "sc": "O(1)",
+    "viva": [
+      {
+        "q": "Why use a min-heap instead of sorting?",
+        "a": "A min-heap strictly manages the top 3 highest elements effortlessly in O(n log 3) time, avoiding the heavy O(n log n) overhead of sorting the entire array."
+      },
+      {
+        "q": "Can this be done without extra space?",
+        "a": "Yes, you can track just three variables (max1, max2, max3) specifically and update them in a single pass manually without a heap structure."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass MaxProduct \n{\n    public int findMaxProduct(int[] arr) \n    {\n        Set<Integer> unique = new HashSet<>();\n        for (int num : arr) \n        {\n            unique.add(num);\n        }\n        if (unique.size() < 3) \n        {\n            return -1;\n        }\n\n        PriorityQueue<Integer> minHeap = new PriorityQueue<>();\n\n        for (int num : unique) \n        {\n            minHeap.offer(num);\n            if (minHeap.size() > 3) \n            {\n                minHeap.poll();\n            }\n        }\n        int product = 1;\n        while (!minHeap.isEmpty()) \n        {\n            product *= minHeap.poll();\n        }\n\n        return product;\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) \n        {\n            arr[i] = sc.nextInt();\n        }\n        MaxProduct obj = new MaxProduct();\n        System.out.println(obj.findMaxProduct(arr));\n    }\n}\n",
+    "python": "import heapq\n\nclass MaxProduct:\n    def find_max_product(self, arr):\n        unique_set = set(arr)\n        if len(unique_set) < 3:\n            return -1\n\n        min_heap = []\n        for num in unique_set:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > 3:\n                heapq.heappop(min_heap)\n        product = 1\n        while min_heap:\n            product *= heapq.heappop(min_heap)\n        return product\n\nn = int(input())\narr = list(map(int, input().split()))\nob1 = MaxProduct()\nprint(ob1.find_max_product(arr))\n"
+  },
+  {
+    "id": 7,
+    "title": "Merge Two Sorted LL",
+    "logicSummary": "Trailing pointers iteratively weave the lowest respective heads of two sorted structures together. It resolves incrementally without reallocating nodes. The tail connects anything remaining entirely at the end.",
+    "tc": "O(n+m)",
+    "sc": "O(1)",
+    "viva": [
+      {
+        "q": "Why is the space complexity O(1) and not O(n+m)?",
+        "a": "Because we aren't creating new nodes; we're simply rearranging the 'next' pointers between existing nodes of both linked lists to weave them together."
+      },
+      {
+        "q": "How do we handle lists of unequal lengths?",
+        "a": "Once one list is completely traversed, the remaining tail of the other list is just directly appended to the merged pointer without further comparison."
+      }
+    ],
+    "java": "import java.util.*;\nclass Node{\n    int data;\n    Node next;\n    public Node(int x)\n    {\n        this.data=x;\n        this.next=null;\n    }\n}\n\npublic class Main\n{\n    public static Node mergeLL(Node H1, Node H2)\n    {\n        if(H1==null) return H2;\n        if(H2==null) return H1;\n        Node t1=H1;\n        Node t2=H2;\n        Node fHead;\n        if(t1.data<t2.data)\n        {\n            fHead=t1;\n            t1=t1.next;\n        }\n        else\n        {\n            fHead=t2;\n            t2=t2.next;\n        }\n        Node Temp=fHead;\n        while(t1!=null && t2!=null)\n        {\n            if(t1.data<t2.data)\n            {\n                Temp.next=t1;\n                t1=t1.next;\n            }\n        else\n            {\n                Temp.next=t2;\n                t2=t2.next;\n            }\n            Temp=Temp.next;\n        }\n        if(t1!=null) Temp.next=t1;\n        if(t2!=null) Temp.next=t2;\n        return fHead;\n    }\n    public static Node createLL(String input)\n    {\n        Node head=null;\n        Node tail= null;\n        String[] arr=input.split(\" \");\n        for(String x: arr)\n        {\n            int val= Integer.valueOf(x);\n            if(val==-1) break;\n            Node newNode= new Node(val);\n            if(head==null)\n            {\n                head=newNode;\n                tail=newNode;\n            }\n            else\n            {\n                tail.next=newNode;\n                tail=newNode;\n            }\n        }\n        return head;\n    }\n    public static void main(String[] args)\n    {\n        Scanner sc= new Scanner(System.in);\n        String line1= sc.nextLine();\n        String line2= sc.nextLine();\n        Node H1= createLL(line1);\n        Node H2= createLL(line2);\n        Node Head= mergeLL(H1,H2);\n        Node temp=Head;\n        while(temp!=null)\n        {\n            System.out.print(temp.data+ \" \");\n            temp=temp.next;\n        }\n    }\n}\n",
+    "python": "# Python version not available for this problem in the repository."
+  },
+  {
+    "id": 8,
+    "title": "Merge Point of Two LL",
+    "logicSummary": "A dual-pointer method spans lengths differently so differences resolve on the second pass. If intersection exists, traversing overlaps eventually aligns symmetrically. Space operates efficiently in constant bounds.",
+    "tc": "O(n+m)",
+    "sc": "O(1)",
+    "viva": [
+      {
+        "q": "How does the two-pointer technique work here?",
+        "a": "Pointers simultaneously traverse both lists. Once a pointer hits the end, it flips to the head of the OTHER list. This synchronizes their lengths on the second pass."
+      },
+      {
+        "q": "What if the lists do not intersect?",
+        "a": "Both pointers will eventually hit 'null' simultaneously on their matched second pass, breaking the loop efficiently without false positives."
+      }
+    ],
+    "java": "import java.util.*;\nclass Node\n{\n    int data;\n    Node next;\n    public Node(int x)\n    {\n        this.data=x;\n        this.next=null;\n    }\n}\n\npublic class Main\n{\n    public static int findMerge(Node H1,Node H2)\n    {\n        Node t1=H1;\n        Node t2=H2;\n        while(t1!=null && t2!=null)\n        {\n            if(t1.data==t2.data)\n            {\n                return t1.data;\n            }\n            else if(t1.data<t2.data)\n            {\n                t1=t1.next;\n            }\n            else\n            {\n                t2=t2.next;\n            }\n        }\n        return -1;\n    }\n    public static Node createLL(String input)\n    {\n        String[] arr= input.split(\" \");\n        Node head=null;\n        Node tail=null;\n        for(String x: arr)\n        {\n            int val=Integer.valueOf(x);\n            if(val==-1) break;\n\n            Node newnode= new Node(val);\n            if(head==null)\n            {\n                head=newnode;\n                tail=newnode;\n            }\n            else\n            {\n                tail.next=newnode;\n                tail=newnode;\n            }\n        }\n        return head;\n    }\n    public static void main(String[] args)\n    {\n        Scanner sc= new Scanner(System.in);\n        String line1=sc.nextLine();\n        String line2=sc.nextLine();\n\n        Node H1=createLL(line1);\n        Node H2=createLL(line2);\n\n        System.out.println(findMerge(H1,H2));\n    }\n}\n\n",
+    "python": "# Python version not available for this problem in the repository."
+  },
+  {
+    "id": 9,
+    "title": "Swap Nodes Pairwise (LL)",
+    "logicSummary": "Pointers hop twice repeatedly along the collection length. Rebinding the intermediate next-pointers handles reversing adjacent sets securely. This executes continuously right to left with dummy-head anchoring.",
+    "tc": "O(n)",
+    "sc": "O(1)",
+    "viva": [
+      {
+        "q": "Why swap nodes instead of values?",
+        "a": "Swapping values involves deep copying data which can be expensive (especially for large objects). Simply re-linking the next pointers is purely O(1) computationally."
+      },
+      {
+        "q": "How do you handle an odd number of nodes?",
+        "a": "The final single node is simply left as-is, because the loop requires pairs strictly to perform the swapping pointers trick."
+      }
+    ],
+    "java": "import java.util.*;\nclass Node {\n    int data;\n    Node next;\n    Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n}\npublic class Main \n{\n    public static Node pairwiseSwap(Node head) \n    {\n        if(head==null || head.next==null) return head;\n        Node dummy = new Node(-1);\n        dummy.next = head;\n        Node prev = dummy;\n        while (prev.next != null && prev.next.next != null) \n        {\n            Node first = prev.next;\n            Node second = first.next;\n            first.next = second.next;\n            second.next = first;\n            prev.next = second;\n            prev = first;\n        }\n        return dummy.next;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String line = sc.nextLine();\n        String[] arr = line.split(\" \");\n        Node head = null, tail = null;\n        for (String x : arr) {\n            int val = Integer.valueOf(x);\n            if (val == -1)\n                break;\n            Node newNode = new Node(val);\n            if (head == null) \n            {\n                head = tail = newNode;\n            } \n            else \n            {\n                tail.next = newNode;\n                tail = newNode;\n            }\n        }\n        Node Fhead = pairwiseSwap(head);\n        Node temp = Fhead;\n        while (temp != null) \n        {\n            System.out.print(temp.data + \" \");\n            temp = temp.next;\n        }\n    }\n}\n",
+    "python": "# Python version not available for this problem in the repository."
+  },
+  {
+    "id": 10,
+    "title": "Validate BST",
+    "logicSummary": "Checking iteratively requires nodes verifying rigid left/right bounded thresholds spanning downward. If thresholds are breached the tree is invalid. In-order checking can instead yield strict monotonic increases.",
+    "tc": "O(n)",
+    "sc": "O(h)",
+    "viva": [
+      {
+        "q": "What is the range approach to validate a BST?",
+        "a": "Recursively pass an updating 'min' and 'max' boundary constraint downwards. If any node's value falls outside its specific inherited range, the tree is fundamentally invalid."
+      },
+      {
+        "q": "Why does inorder traversal work for validation?",
+        "a": "An in-order traversal of a strict Binary Search Tree specifically guarantees a purely sorted ascending order sequence mathematically."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass Node \n{\n    int data;\n    Node left, right;\n    Node(int data) \n    {\n        this.data = data;\n        left = right = null;\n    }\n}\n\nclass BST \n{\n    int idx = 0;\n    public Node buildTree(int[] arr) {\n        if (idx >= arr.length || arr[idx] == -1) {\n            idx++;\n            return null;\n        }\n        Node root = new Node(arr[idx++]);\n        root.left = buildTree(arr);\n        root.right = buildTree(arr);\n\n        return root;\n    }\n    public boolean isBST(Node root, int min, int max) {\n        if (root == null)\n            return true;\n\n        if (root.data <= min || root.data >= max)\n            return false;\n\n        return isBST(root.left, min, root.data) &&\n               isBST(root.right, root.data, max);\n    }\n}\n\n\npublic class Main {\n    public static void main(String[] args) {\n\n        Scanner sc = new Scanner(System.in);\n        String[] input = sc.nextLine().split(\" \");\n        int[] arr = new int[input.length];\n\n        for (int i = 0; i < input.length; i++) {\n            arr[i] = Integer.valueOf(input[i]);\n        }\n\n        BST bst = new BST();\n        Node root = bst.buildTree(arr);\n\n        boolean result = bst.isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE);\n        System.out.println(result);\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.left = None\n        self.right = None\n\nclass BST:\n    def __init__(self):\n        self.idx = 0 \n    def build_tree(self, arr):\n        if self.idx >= len(arr):\n            return None\n        if arr[self.idx] == -1:\n            self.idx+=1\n            return None\n        root = Node(arr[self.idx])\n        self.idx += 1\n        root.left = self.build_tree(arr)\n        root.right = self.build_tree(arr)\n        return root\n    def is_bst(self, root, min_val, max_val):\n        if root is None:\n            return True\n        if root.data <= min_val or root.data >= max_val:\n            return False\n        return (self.is_bst(root.left, min_val, root.data) and\n                self.is_bst(root.right, root.data, max_val))\n\narr = list(map(int, input().split()))\nbst = BST()\nroot = bst.build_tree(arr)\n\nresult = bst.is_bst(root, float('-inf'), float('inf'))\nprint(result)\n"
+  },
+  {
+    "id": 11,
+    "title": "Build BST",
+    "logicSummary": "Data cascades individually from a root recursively determining left for less and right for more iteratively. Constructive balancing ensures typical log heights remain standard. Worst scenarios yield linear degradation.",
+    "tc": "O(n)",
+    "sc": "O(n)",
+    "viva": [
+      {
+        "q": "How do you insert an element in a binary search tree?",
+        "a": "You start from the root. If the incoming value is smaller, traverse left; if larger, traverse right. Insert it as a new leaf when a null spot is found."
+      },
+      {
+        "q": "What happens if the input is sorted?",
+        "a": "It aggressively degenerates into a completely skewed, unbalanced right-sided (or left-sided) single linked list, causing O(n) search/insert degradation."
+      }
+    ],
+    "java": "import java.util.Scanner;\n\nclass Node \n{\n    int data;\n    Node left, right;\n    Node(int data) \n    {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\n\nclass BST \n{\n    Node root;\n    public void insert(int data) \n    {\n        if (root == null)  root = new Node(data);\n        else  insertRecursion(root, data);\n    }\n\n    public void insertRecursion(Node node, int data) \n    {\n        if (data < node.data) \n        {\n            if (node.left == null) \n            {\n                node.left = new Node(data);\n            } \n            else \n            {\n                insertRecursion(node.left, data);\n            }\n        } \n        else \n        {\n            if (node.right == null) \n            {\n                node.right = new Node(data);\n            } \n            else \n            {\n                insertRecursion(node.right, data);\n            }\n        }\n    }\n\n    public void inOrder(Node node) \n    {\n        if (node == null)  return;\n        inOrder(node.left);\n        System.out.print(node.data + \" \");\n        inOrder(node.right);\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        String line = sc.nextLine();         \n        String[] tokens = line.split(\" \");   \n        BST tree = new BST();\n\n        for (String token : tokens) \n        {\n            int val = Integer.valueOf(token);\n            if (val == -1)\n                break;\n\n            tree.insert(val);\n        }\n\n        tree.inOrder(tree.root);\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self,x):\n        self.data=x\n        self.left=None\n        self.right=None\n\nclass BST:\n    def __init__(self):\n        self.root=None\n\n    def insert(self,data):\n        if self.root is None:\n            self.root= Node(data)\n        else:\n            self.insertRecursion(self.root,data)\n    def insertRecursion(self,node,data):\n        if data<node.data:\n            if node.left is None:\n                node.left=Node(data)\n            else:\n                self.insertRecursion(node.left,data)\n        else:\n            if node.right is None:\n                node.right=Node(data)\n            else:\n                self.insertRecursion(node.right,data)\n    \n    def inorder(self,node):\n        if node is None:\n            return\n        self.inorder(node.left)\n        print(node.data,end=' ')\n        self.inorder(node.right)\n\n\nif __name__==\"__main__\":\n    line1=list(map(int,input().split()))\n    tree= BST()\n    for x in line1:\n        if x==-1:\n            break\n        tree.insert(x)\n    tree.inorder(tree.root)\n\n\n\n"
+  },
+  {
+    "id": 12,
+    "title": "Max Depth of Tree",
+    "logicSummary": "A depth-first or bottom-up protocol measures branches separately and evaluates the greater path recursively. Combining right and left paths dynamically provides the full span. Addition by one resolves root inclusion.",
+    "tc": "O(n)",
+    "sc": "O(h)",
+    "viva": [
+      {
+        "q": "How do breadth-first and depth-first approaches compare?",
+        "a": "DFS recursively adds 1 + max(left, right) cleanly down path branches. BFS queues nodes level-by-level, incrementing a counter completely per layer explicitly."
+      },
+      {
+        "q": "What does a balanced tree's height look like?",
+        "a": "A perfectly balanced tree natively operates at close to O(log p) depth proportionately to the number of nodes (p)."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass Node {\n    int data;\n    Node left;\n    Node right;\n\n    Node(int data) {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\n\nclass BuildTree {\n    int idx = 0;\n\n    public Node buildTree(int[] arr) {\n        if (idx >= arr.length || arr[idx] == -1) {\n            idx++;\n            return null;\n        }\n\n        Node root = new Node(arr[idx++]);\n        root.left = buildTree(arr);\n        root.right = buildTree(arr);\n\n        return root;\n    }\n    public int maxDepth(Node root) {\n        if (root == null)\n            return 0;\n\n        int leftDepth = maxDepth(root.left);\n        int rightDepth = maxDepth(root.right);\n\n        return Math.max(leftDepth, rightDepth) + 1;\n    }\n}\n\n\n\npublic class Main {\n    public static void main(String[] args) {\n\n        Scanner sc = new Scanner(System.in);\n        String line = sc.nextLine();\n        String[] tokens = line.split(\" \");\n\n        int[] arr = new int[tokens.length];\n        for (int i = 0; i < tokens.length; i++) {\n            arr[i] = Integer.valueOf(tokens[i]);\n        }\n\n        BuildTree bt = new BuildTree();\n        Node root = bt.buildTree(arr);\n\n        System.out.println(bt.maxDepth(root));\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.left = None\n        self.right = None\n\nclass BuildTree:\n    def __init__(self):\n        self.idx = 0\n\n    def buildTree(self, arr):\n        if self.idx >= len(arr):\n            return None\n        if arr[self.idx] == -1:\n            self.idx += 1\n            return None\n        root = Node(arr[self.idx])\n        self.idx += 1\n        root.left = self.buildTree(arr)\n        root.right = self.buildTree(arr)\n        return root\n\n    def maxDepth(self, node):\n        if node is None:\n            return 0\n        left_depth = self.maxDepth(node.left)\n        right_depth = self.maxDepth(node.right)\n\n        return 1 + max(left_depth, right_depth)\n\n\narr = list(map(int, input().split()))\nbt = BuildTree()\nroot = bt.buildTree(arr)\nprint(bt.maxDepth(root))\n"
+  },
+  {
+    "id": 13,
+    "title": "Tree Traversals (In/Pre/Post)",
+    "logicSummary": "Traversals recursively anchor a sequence pattern around visiting root elements relatively against their spans. An in-order pattern specifically sorts regular BST architectures perfectly. Pre- and post-order manage copy-state and delete-state naturally.",
+    "tc": "O(n)",
+    "sc": "O(h)",
+    "viva": [
+      {
+        "q": "Which traversal is used for deleting a tree?",
+        "a": "Post-order traversal strictly, because naturally you must fully delete child nodes recursively before you blindly delete their parent node safely."
+      },
+      {
+        "q": "How can we do traversals without recursion?",
+        "a": "By dynamically mimicking the call stack purely using specific explicit stack structures (e.g. while loops) and iterating down paths."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass Node \n{\n    int data;\n    Node left;\n    Node right;\n    Node(int data) \n    {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\n\n\nclass BuildTree \n{\n    int idx = 0;\n    public Node buildTree(List<Integer> arr) \n    {\n        if (idx >= arr.size() || arr.get(idx) == -1) \n        {\n            idx++;\n            return null;\n        }\n\n        Node root = new Node(arr.get(idx++));\n        root.left = buildTree(arr);\n        root.right = buildTree(arr);\n\n        return root;\n    }\n    public void preorder(Node root) \n    {\n        if (root == null) return;\n        System.out.print(root.data + \" \");\n        preorder(root.left);\n        preorder(root.right);\n    }\n\n    public void inorder(Node root) \n    {\n        if (root == null) return;\n        inorder(root.left);\n        System.out.print(root.data + \" \");\n        inorder(root.right);\n    }\n\n    public void postorder(Node root) \n    {\n        if (root == null) return;\n        postorder(root.left);\n        postorder(root.right);\n        System.out.print(root.data + \" \");\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        List<Integer> arr = new ArrayList<>();\n        while (sc.hasNextInt()) \n        {\n            arr.add(sc.nextInt());\n        }\n        BuildTree bt = new BuildTree();\n        Node root = bt.buildTree(arr);\n\n        bt.preorder(root);\n        System.out.println();\n\n        bt.inorder(root);\n        System.out.println();\n\n        bt.postorder(root);\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.left = None\n        self.right = None\n\n\nclass BuildTree:\n    def __init__(self):\n        self.idx = 0\n\n    def build_tree(self, arr):\n        if self.idx >= len(arr):\n            return None\n\n        if  arr[self.idx] == -1:\n            self.idx+=1\n            return None\n\n        root = Node(arr[self.idx])\n        self.idx += 1\n\n        root.left = self.build_tree(arr)\n        root.right = self.build_tree(arr)\n\n        return root\n\n    def preorder(self, root):\n        if root is None:\n            return\n        print(root.data, end=\" \")\n        self.preorder(root.left)\n        self.preorder(root.right)\n\n    def inorder(self, root):\n        if root is None:\n            return\n        self.inorder(root.left)\n        print(root.data, end=\" \")\n        self.inorder(root.right)\n\n    def postorder(self, root):\n        if root is None:\n            return\n        self.postorder(root.left)\n        self.postorder(root.right)\n        print(root.data, end=\" \")\n\n\nimport sys\narr = list(map(int, sys.stdin.read().split()))\nbt = BuildTree()\nroot = bt.build_tree(arr)\nbt.preorder(root)\nprint()\nbt.inorder(root)\nprint()\nbt.postorder(root)\n"
+  },
+  {
+    "id": 14,
+    "title": "Boundary Traversal",
+    "logicSummary": "Boundary paths consist uniquely of a root, right bound, left bound explicitly, and all subsequent leaves. Combining sequence lists in alternating traverse formats correctly manages non-repeated elements universally. It specifically restricts inner non-leaf subtrees effectively.",
+    "tc": "O(n)",
+    "sc": "O(h)",
+    "viva": [
+      {
+        "q": "How do we pick boundary nodes to avoid duplication?",
+        "a": "By carefully restricting the separate logical passes: extracting the left edge, then explicitly checking leaves, then extracting the right edge backwards without redundant overlaps."
+      },
+      {
+        "q": "What constitutes the boundary of a tree?",
+        "a": "Logically, it includes the vertical left-sided boundary, all strict bottom leaves sequentially, and the vertical right-sided boundary natively."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass Node {\n    int data;\n    Node left, right;\n\n    Node(int data) {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\n\nclass BuildTree {\n    Node root;\n\n    BuildTree() {\n        this.root = null;\n    }\n    void insert(int data) {\n        if (root == null) {\n            root = new Node(data);\n        } else {\n            insertRecursion(root, data);\n        }\n    }\n\n    void insertRecursion(Node node, int data) {\n        if (data < node.data) {\n            if (node.left == null) {\n                node.left = new Node(data);\n            } else {\n                insertRecursion(node.left, data);\n            }\n        } else {\n            if (node.right == null) {\n                node.right = new Node(data);\n            } else {\n                insertRecursion(node.right, data);\n            }\n        }\n    }\n\n    boolean isLeaf(Node node) {\n        return node != null && node.left == null && node.right == null;\n    }\n\n    void leftBoundary(Node root, List<Integer> res) {\n        Node curr = root.left;\n        while (curr != null) {\n            if (!isLeaf(curr)) {\n                res.add(curr.data);\n            }\n            curr = (curr.left != null) ? curr.left : curr.right;\n        }\n    }\n\n    void rightBoundary(Node root, List<Integer> res) {\n        Node curr = root.right;\n        List<Integer> temp = new ArrayList<>();\n\n        while (curr != null) {\n            if (!isLeaf(curr)) {\n                temp.add(curr.data);\n            }\n            curr = (curr.right != null) ? curr.right : curr.left;\n        }\n\n        for (int i = temp.size() - 1; i >= 0; i--) {\n            res.add(temp.get(i));\n        }\n    }\n\n    void leafNodes(Node root, List<Integer> res) {\n        if (root == null) return;\n\n        if (isLeaf(root)) {\n            res.add(root.data);\n            return;\n        }\n\n        leafNodes(root.left, res);\n        leafNodes(root.right, res);\n    }\n\n    List<Integer> boundaryTraversal(Node root) {\n        List<Integer> res = new ArrayList<>();\n        if (root == null) return res;\n\n        res.add(root.data);              \n        leftBoundary(root, res);         \n        leafNodes(root.left, res);       \n        leafNodes(root.right, res);      \n        rightBoundary(root, res);        \n\n        return res;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n\n        String[] input = sc.nextLine().split(\" \");\n        BuildTree bt = new BuildTree();\n\n        for (String s : input) {\n            int val = Integer.parseInt(s);\n            if (val != -1) {\n                bt.insert(val);\n            }\n        }\n\n        List<Integer> result = bt.boundaryTraversal(bt.root);\n        System.out.print(\"Boundary Traversal: \");\n        for (int v : result) {\n            System.out.print(v + \" \");\n        }\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.left = None\n        self.right = None\n\nclass BuildTree:\n    def __init__(self):\n        self.root = None\n    def insert(self, data):\n        if self.root is None:\n            self.root = Node(data)\n        else:\n            self.insertRecursion(self.root, data)\n    def insertRecursion(self, node, data):\n        if data < node.data:\n            if node.left is None:\n                node.left = Node(data)\n            else:\n                self.insertRecursion(node.left, data)\n        else:\n            if node.right is None:\n                node.right = Node(data)\n            else:\n                self.insertRecursion(node.right, data)\n\n    def is_leaf(self, node):\n        return node and not node.left and not node.right\n    def left_boundary(self, root, res):\n        curr = root.left\n        while curr:\n            if not self.is_leaf(curr):\n                res.append(curr.data)\n            curr = curr.left if curr.left else curr.right\n    def right_boundary(self, root, res):\n        curr = root.right\n        temp = []\n        while curr:\n            if not self.is_leaf(curr):\n                temp.append(curr.data)\n            curr = curr.right if curr.right else curr.left\n        res.extend(temp[::-1])\n    def leaf_nodes(self, root, res):\n        if not root:\n            return\n        if self.is_leaf(root):\n            res.append(root.data)\n            return\n        self.leaf_nodes(root.left, res)\n        self.leaf_nodes(root.right, res)\n\n    def boundary_traversal(self, root):\n        if not root:\n            return []\n        res = [root.data]\n        self.left_boundary(root, res)\n        self.leaf_nodes(root.left, res)\n        self.leaf_nodes(root.right, res)\n        self.right_boundary(root, res)\n        return res\narr = list(map(int, input().split()))\nbt = BuildTree()\nfor v in arr:\n    if v!=-1:\n        bt.insert(v)\nresult = bt.boundary_traversal(bt.root)\nprint(\"Boundary Traversal:\", *result)\n"
+  },
+  {
+    "id": 15,
+    "title": "Lowest Common Ancestor (LCA)",
+    "logicSummary": "Navigating checks spanning roots systematically isolates intersection points dynamically over structural boundaries. On BST arrays, evaluating numerical divergence solves it directly. Otherwise paths track nodes confirming common ancestral lines.",
+    "tc": "O(h)",
+    "sc": "O(h)",
+    "viva": [
+      {
+        "q": "How is LCA in a BST different from a standard binary tree?",
+        "a": "In a BST, you can blindly track down. The first node naturally having a value strictly *between* the two targets is mathematically guaranteed to be the LCA."
+      },
+      {
+        "q": "What happens if both nodes are on the same side of the root?",
+        "a": "The LCA is simply whichever of the two nodes mathematically sits proportionately higher structurally in the path tree."
+      }
+    ],
+    "java": "import java.util.*;\nclass Node {\n    int data;\n    Node left, right;\n\n    Node(int data) {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\n\nclass BuildTree {\n    Node root;\n    public void insert(int data) \n    {\n        if (root == null)  root = new Node(data);\n        else  insertRecursion(root, data);\n    }\n\n    public void insertRecursion(Node node, int data) \n    {\n        if (data < node.data) \n        {\n            if (node.left == null) \n            {\n                node.left = new Node(data);\n            } \n            else \n            {\n                insertRecursion(node.left, data);\n            }\n        } \n        else \n        {\n            if (node.right == null) \n            {\n                node.right = new Node(data);\n            } \n            else \n            {\n                insertRecursion(node.right, data);\n            }\n        }\n    }\n\n    public Node lca(Node root, int n1, int n2) {\n        if (root == null) return null;\n\n        if (n1 < root.data && n2 < root.data) {\n            return lca(root.left, n1, n2);\n        }\n\n        if (n1 > root.data && n2 > root.data) {\n            return lca(root.right, n1, n2);\n        }\n\n        return root; // split point\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String[] input = sc.nextLine().split(\" \");\n        BuildTree bst = new BuildTree();\n\n        for (String s : input) {\n            int val = Integer.parseInt(s);\n            if (val != -1) {\n                bst.insert(val);\n            }\n        }\n        int n1 = sc.nextInt();\n        int n2 = sc.nextInt();\n\n        Node lcaNode = bst.lca(bst.root, n1, n2);\n\n        System.out.println(\n            \"The Lowest Common Ancestor of \" + n1 + \" and \" + n2 +\n            \" is \" + lcaNode.data + \".\"\n        );\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.left = None\n        self.right = None\n\nclass BST:\n    def __init__(self):\n        self.root = None\n    def insert(self, data):\n        if self.root is None:\n            self.root = Node(data)\n        else:\n            self.insertRecursion(self.root, data)\n    def insertRecursion(self, node, data):\n        if data < node.data:\n            if node.left is None:\n                node.left = Node(data)\n            else:\n                self.insertRecursion(node.left, data)\n        else:\n            if node.right is None:\n                node.right = Node(data)\n            else:\n                self.insertRecursion(node.right, data)\n\n    def lca(self, node, n1, n2):\n        while node:\n            if n1 < node.data and n2 < node.data:\n                node = node.left\n            elif n1 > node.data and n2 > node.data:\n                node = node.right\n            else:\n                return node.data\n\nvalues = list(map(int, input().split()))\nn1, n2 = map(int, input().split())\n\nbst = BST()\nfor v in values:\n    if v != -1:\n        bst.insert(v)\n\nresult = bst.lca(bst.root, n1, n2)\nprint(f\"The Lowest Common Ancestor of {n1} and {n2} is {result}.\")\n"
+  },
+  {
+    "id": 16,
+    "title": "Mirror Trees (Symmetric)",
+    "logicSummary": "Mirror logic validates parallel structures comparing opposed sides structurally equal but horizontally inverted correctly. A recursive check continuously steps pairs effectively confirming opposite alignment natively. Any irregularity immediately evaluates falsely.",
+    "tc": "O(n)",
+    "sc": "O(h)",
+    "viva": [
+      {
+        "q": "What are the checks required to prove two trees are mirrors?",
+        "a": "You concurrently verify `node1.left == node2.right` and `node1.right == node2.left` while confirming both values perfectly match repeatedly."
+      },
+      {
+        "q": "Can symmetry be checked iteratively?",
+        "a": "Yes, using a queue (like BFS) and pushing paired nodes constantly to evaluate opposites sequentially without deep recursion."
+      }
+    ],
+    "java": "import java.util.*;\nclass Node {\n    int data;\n    Node left, right;\n\n    Node(int data) {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\n\nclass BuildTree {\n    int idx = 0;\n    Node buildTree(int[] arr) {\n        if (idx >= arr.length || arr[idx] == -1) {\n            idx++;\n            return null;\n        }\n        Node root = new Node(arr[idx++]);\n        root.left = buildTree(arr);\n        root.right = buildTree(arr);\n        return root;\n    }\n}\n\npublic class Main {\n    static boolean isMirror(Node root1, Node root2) {\n        if (root1 == null && root2 == null)\n            return true;\n        if (root1 == null || root2 == null)\n            return false;\n        return (root1.data == root2.data)\n                && isMirror(root1.left, root2.right)\n                && isMirror(root1.right, root2.left);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String[] input1 = sc.nextLine().split(\" \");\n        int[] arr1 = new int[input1.length];\n        for (int i = 0; i < input1.length; i++)\n            arr1[i] = Integer.parseInt(input1[i]);\n\n        String[] input2 = sc.nextLine().split(\" \");\n        int[] arr2 = new int[input2.length];\n        for (int i = 0; i < input2.length; i++)\n            arr2[i] = Integer.parseInt(input2[i]);\n\n        BuildTree bt1 = new BuildTree();\n        BuildTree bt2 = new BuildTree();\n\n        Node root1 = bt1.buildTree(arr1);\n        Node root2 = bt2.buildTree(arr2);\n        if (isMirror(root1, root2)) {\n            System.out.println(\"The two trees are mirrors of each other.\");\n        } else {\n            System.out.println(\"The two trees are not mirrors of each other.\");\n        }\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.left = None\n        self.right = None\n\nclass BuildTree:\n    def __init__(self):\n        self.idx = 0\n    def build_tree(self, arr):\n        if self.idx >= len(arr):\n            return None\n        if arr[self.idx] == -1:\n            self.idx += 1\n            return None\n        root = Node(arr[self.idx])\n        self.idx += 1\n        root.left = self.build_tree(arr)\n        root.right = self.build_tree(arr)\n        return root\n#Main__________________\narr1 = list(map(int, input().split()))\narr2 = list(map(int, input().split()))\nbt1 = BuildTree()\nbt2 = BuildTree()\nroot1 = bt1.build_tree(arr1)\nroot2 = bt2.build_tree(arr2)\ndef is_mirror(root1, root2):\n    if root1 is None and root2 is None:\n        return True\n    if root1 is None or root2 is None:\n        return False\n    if root1.data != root2.data:\n        return False\n    return (is_mirror(root1.left, root2.right) and\n            is_mirror(root1.right, root2.left))\n\nif is_mirror(root1, root2):\n    print(\"The two trees are mirrors of each other.\")\nelse:\n    print(\"The two trees are not mirrors of each other.\")\n"
+  },
+  {
+    "id": 17,
+    "title": "Basic Hash Function",
+    "logicSummary": "Typical modular hashing evaluates strings and numbers distributing identifiers proportionally across limits. Combining arrays directly indexes into the allocated set appropriately quickly. High quality mappings distribute bits reducing immediate linear overlap universally.",
+    "tc": "O(1)",
+    "sc": "O(n)",
+    "viva": [
+      {
+        "q": "What makes a good hash function?",
+        "a": "It structurally minimizes unpredictable collisions, natively distributes items uniformly within bounds, and evaluates computationally quickly."
+      },
+      {
+        "q": "Common ways to avoid basic collisions?",
+        "a": "By increasing array bucket size using prime numbers, utilizing mathematical chaining, and integrating linear or quadratic probing specifically."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass Node \n{\n    int key, value;\n    Node next;\n    Node(int key, int value) \n    {\n        this.key = key;\n        this.value = value;\n        this.next = null;\n    }\n}\n\nclass HashTable \n{\n    int SIZE = 10;\n    Node[] table;\n\n    HashTable() \n    {\n        table = new Node[SIZE];\n    }\n\n    int hash(int key) \n    {\n        return key % SIZE;\n    }\n\n    void insert(int key, int value) \n    {\n        int index = hash(key);\n        Node newNode = new Node(key, value);\n\n        if (table[index] == null) \n        {\n            table[index] = newNode;\n        } \n        else \n        {\n            Node temp = table[index];\n            while (temp.next != null) \n            {\n                temp = temp.next;\n            }\n            temp.next = newNode;\n        }\n        System.out.println(\"Inserted: (\" + key + \",\" + value + \")\");\n    }\n\n    void search(int key) {\n        int index = hash(key);\n        Node temp = table[index];\n\n        while (temp != null) \n        {\n            if (temp.key == key) \n            {\n                System.out.println(key + \" -> \" + temp.value);\n                return;\n            }\n            temp = temp.next;\n        }\n    }\n\n    void display() {\n        for (int i = 0; i < SIZE; i++) \n        {\n            System.out.print(i + \": \");\n            Node temp = table[i];\n            if (temp == null) \n            {\n                System.out.println(\"NULL\");\n            } \n            else \n            {\n                while (temp != null) \n                {\n                    System.out.print(\"(\" + temp.key + \",\" + temp.value + \")-> \");\n                    temp = temp.next;\n                }\n                System.out.println(\"NULL\");\n            }\n        }\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        HashTable ht = new HashTable();\n\n        while (true) \n        {\n            int choice = sc.nextInt();\n            switch (choice) \n            {\n                case 1:\n                    int key = sc.nextInt();\n                    int value = sc.nextInt();\n                    ht.insert(key, value);\n                    break;\n                case 2:\n                    int searchKey = sc.nextInt();\n                    ht.search(searchKey);\n                    break;\n                case 3:\n                    ht.display();\n                    break;\n                case 4:\n                    System.out.println(\"Exit\");\n                    return;\n            }\n        }\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, key, value):\n        self.key = key\n        self.value = value\n        self.next = None\n\nclass HashTable:\n    def __init__(self):\n        self.size = 10\n        self.table = [None] * self.size\n    def hash_func(self, key):\n        return key % self.size\n\n    def insert(self, key, value):\n        index = self.hash_func(key)\n        new_node = Node(key, value)\n        if self.table[index] is None:\n            self.table[index] = new_node\n        else:\n            curr = self.table[index]\n            while curr.next:\n                curr = curr.next\n            curr.next = new_node\n        print(f\"Inserted: ({key},{value})\")\n\n    def retrieve(self, key):\n        index = self.hash_func(key)\n        curr = self.table[index]\n        while curr:\n            if curr.key == key:\n                print(f\"{key} -> {curr.value}\")\n                return\n            curr = curr.next\n    def display(self):\n        for i in range(self.size):\n            print(f\"{i}:\", end=\" \")\n            curr = self.table[i]\n            if not curr:\n                print(\"NULL\")\n            else:\n                while curr:\n                    print(f\"({curr.key},{curr.value})->\", end=\" \")\n                    curr = curr.next\n                print(\"NULL\")\n\nht = HashTable()\nwhile True:\n        op = int(input())\n        if op == 1:\n            key, value = map(int, input().split())\n            ht.insert(key, value)\n        elif op == 2:\n            key = int(input())\n            ht.retrieve(key)\n        elif op == 3:\n            ht.display()\n        elif op == 4:\n            print(\"Exit\")\n            break\n"
+  },
+  {
+    "id": 18,
+    "title": "Separate Chaining",
+    "logicSummary": "Colliding keys occupy the specific array index but resolve dynamically into consecutive linked structures uniformly. Traversal strictly limits checking length proportionally around overall usage metrics directly. Insertion efficiently drops into chains instantaneously natively.",
+    "tc": "O(1)",
+    "sc": "O(n+k)",
+    "viva": [
+      {
+        "q": "Why is linked list used for separate chaining?",
+        "a": "It natively prevents data loss by appending dynamically expanding node lists into a specific collision bucket infinitely if necessary."
+      },
+      {
+        "q": "How does load factor affect performance?",
+        "a": "A high load factor proportionately causes longer average overlapping chains, directly increasing average lookup times uncomfortably toward O(n)."
+      }
+    ],
+    "java": "import java.util.*;\nclass Node \n{\n    int key;\n    int value;\n    Node next;\n    Node(int key, int value) \n    {\n        this.key = key;\n        this.value = value;\n        this.next = null;\n    }\n}\n\nclass HashTable \n{\n    int SIZE = 10;\n    Node[] table;\n    HashTable() \n    {\n        table = new Node[SIZE];\n    }\n\n    int hashFunc(int key) \n    {\n        return key % SIZE;\n    }\n\n    public void insert(int key, int value) \n    {\n        int index = hashFunc(key);\n        Node newNode = new Node(key, value);\n        newNode.next = table[index];\n        table[index] = newNode;\n\n        System.out.println(\"Inserted: (\" + key + \",\" + value + \")\");\n    }\n\n    public void delete(int key) \n    {\n        int index = hashFunc(key);\n        Node curr = table[index];\n        Node prev = null;\n        while (curr != null) \n        {\n            if (curr.key == key) \n            {\n                if (prev == null) \n                {\n                    table[index] = curr.next;\n                } \n                else \n                {\n                    prev.next = curr.next;\n                }\n                curr.next = null;\n                System.out.println(\"Key \" + key + \" deleted successfully.\");\n                return;\n            }\n            prev = curr;\n            curr = curr.next;\n        }\n        System.out.println(\"Key \" + key + \" not found.\");\n    }\n\n    public void retrieve(int key) \n    {\n        int index = hashFunc(key);\n        Node curr = table[index];\n        while (curr != null) \n        {\n            if (curr.key == key) \n            {\n                System.out.println(key + \" -> \" + curr.value);\n                return;\n            }\n            curr = curr.next;\n        }\n        System.out.println(\"Key \" + key + \" not found.\");\n    }\n\n    public void display() \n    {\n        for (int i = 0; i < SIZE; i++) \n        {\n            if (table[i] != null) \n            {\n                System.out.print(\"Index \" + i + \": \");\n                Node curr = table[i];\n                while (curr != null) \n                {\n                    System.out.print(\"(\" + curr.key + \",\" + curr.value + \") \");\n                    curr = curr.next;\n                }\n                System.out.println();\n            }\n        }\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        HashTable ht = new HashTable();\n        while (true) \n        {\n            int op = sc.nextInt();\n            if (op == 1) \n            {\n                int key = sc.nextInt();\n                int value = sc.nextInt();\n                ht.insert(key, value);\n            } \n            else if (op == 2) \n            {\n                int key = sc.nextInt();\n                ht.delete(key);\n            } \n            else if (op == 3) \n            {\n                int key = sc.nextInt();\n                ht.retrieve(key);\n            } \n            else if (op == 4) \n            {\n                ht.display();\n            } \n            else if (op == 5) \n            {\n                System.out.println(\"Exit\");\n                break;\n            }\n        }\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, key, value):\n        self.key = key\n        self.value = value\n        self.next = None\n\nclass HashTable:\n    def __init__(self):\n        self.size = 10\n        self.table = [None] * self.size\n    def hash_func(self, key):\n        return key % self.size\n\n    def insert(self, key, value):\n        index = self.hash_func(key)\n        new_node = Node(key, value)\n        new_node.next = self.table[index]\n        self.table[index] = new_node\n        print(f\"Inserted: ({key},{value})\")\n\n    def delete(self, key):\n        index = self.hash_func(key)\n        curr = self.table[index]\n        prev = None\n        while curr:\n            if curr.key == key:\n                if prev is None:\n                    self.table[index] = curr.next\n                else:\n                    prev.next = curr.next\n                curr.next=None\n                print(f\"Key {key} deleted successfully.\")\n                return\n            prev = curr\n            curr = curr.next\n        print(f\"Key {key} not found.\")\n    def retrieve(self, key):\n        index = self.hash_func(key)\n        curr = self.table[index]\n        while curr:\n            if curr.key == key:\n                print(f\"{key} -> {curr.value}\")\n                return\n            curr = curr.next\n        print(f\"Key {key} not found.\")\n\n    def display(self):\n        for i in range(self.size):\n            if self.table[i]:\n                print(f\"Index {i}:\", end=\" \")\n                curr = self.table[i]\n                while curr:\n                    print(f\"({curr.key},{curr.value})\", end=\" \")\n                    curr = curr.next\n                print()\n\nht = HashTable()\nwhile True:\n    op = int(input())\n    if op == 1:\n        key, value = map(int, input().split())\n        ht.insert(key, value)\n    elif op == 2:\n        key = int(input())\n        ht.delete(key)\n    elif op == 3:\n        key = int(input())\n        ht.retrieve(key)\n    elif op == 4:\n        ht.display()\n    elif op == 5:\n        print(\"Exit\")\n        break\n"
+  },
+  {
+    "id": 19,
+    "title": "Two Sum",
+    "logicSummary": "Mapping individual lookups immediately isolates complements natively traversing single paths linearly easily. Unmatched items push sequentially directly onto maps preserving state effectively. It optimizes away heavy combinatorial checking natively efficiently.",
+    "tc": "O(n)",
+    "sc": "O(n)",
+    "viva": [
+      {
+        "q": "Why is hashing better than the two-pointer approach here?",
+        "a": "The two-pointer technique strictly requires an explicitly sorted array (incurring an O(n log n) cost). Hashing simply works on unsorted arrays naturally in pure O(n)."
+      },
+      {
+        "q": "What if the array is already sorted?",
+        "a": "If sorted, the two-pointer technique runs equally essentially in O(n) and utilizes flawless strictly O(1) space explicitly."
+      }
+    ],
+    "java": "import java.util.*;\nclass TwoSum \n{\n    public void findTwoSum(int[] arr, int target) \n    {\n        HashMap<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < arr.length; i++) \n        {\n            int required = target - arr[i];\n            if (map.containsKey(required)) \n            {\n                System.out.println(\"Finding two indices whose values add up to \" + target + \"...\");\n                System.out.println(\"Indices: \" + map.get(required) + \" \" + i);\n                return;\n            }\n            map.put(arr[i], i);\n        }\n        System.out.println(\"No solution found\");\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) {\n            arr[i] = sc.nextInt();\n        }\n        int target = sc.nextInt();\n\n        TwoSum obj = new TwoSum();\n        obj.findTwoSum(arr, target);\n    }\n}\n",
+    "python": "class TwoSum:\n    def find_indices(self, arr, target):\n        hashmap = {}\n        print(f\"Finding two indices whose values add up to {target}...\")\n        for i in range(len(arr)):\n            x=arr[i]\n            y = target - x\n            if y in hashmap:\n                print(f\"Indices: {hashmap[y]} {i}\")\n                return\n            hashmap[arr[i]] = i\n        print(\"No solution found\")\n\nn = int(input().strip())\narr = list(map(int, input().split()))\ntarget = int(input().strip())\n\nfinder = TwoSum()\nfinder.find_indices(arr, target)\n"
+  },
+  {
+    "id": 20,
+    "title": "Trie (Search/Insert/Remove)",
+    "logicSummary": "Trie inserts build node sequences correlating directly to individual characters recursively structurally precisely. Valid completions flag nodes confirming complete word alignments cleanly. Branch paths efficiently reduce string sets naturally effectively.",
+    "tc": "O(L)",
+    "sc": "O(ALN)",
+    "viva": [
+      {
+        "q": "Why use a Trie instead of a hash table?",
+        "a": "A Trie flawlessly permits prefix searches natively, natively solves structural overlaps dynamically, and optimizes character clustering cleanly without hard hashing conflicts."
+      },
+      {
+        "q": "How does prefix search work?",
+        "a": "Iteratively stepping down character sequences dynamically evaluating valid boolean terminating flags structurally precisely identifies matched roots."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass TrieNode \n{\n    Map<Character, TrieNode> children;\n    boolean flag;\n    public TrieNode() \n    {\n        children = new HashMap<>();\n        flag = false;\n    }\n}\n\nclass Trie \n{\n    TrieNode root;\n    Trie() \n    {\n        root = new TrieNode();\n    }\n    void insert(String word) \n    {\n        TrieNode current = root;\n        for (int i = 0; i < word.length(); i++) \n        {\n            char ch = word.charAt(i);\n            TrieNode node = current.children.get(ch);\n            if (node == null) {\n                node = new TrieNode();\n                current.children.put(ch, node);\n            }\n            current = node;\n        }\n        current.flag = true;\n        System.out.println(\"Inserted: \" + word);\n    }\n\n    boolean search(String word) \n    {\n        TrieNode current = root;\n        for (int i = 0; i < word.length(); i++) \n        {\n            char ch = word.charAt(i);\n            TrieNode node = current.children.get(ch);\n            if (node == null) \n            {\n                return false;\n            }\n            current = node;\n        }\n        return current.flag;\n    }\n\n    void remove(String word) \n    {\n        if (!search(word)) \n        {\n            System.out.println(\"Not found: \" + word);\n            return;\n        }\n        removeRecursion(root, word, 0);\n        System.out.println(\"Removed: \" + word);\n    }\n\n    public boolean removeRecursion(TrieNode current, String word, int index) \n    {\n        if (index == word.length()) \n        {\n            current.flag = false;\n            return current.children.size() == 0;\n        }\n\n        char ch = word.charAt(index);\n        TrieNode node = current.children.get(ch);\n        boolean shouldDeleteChild = removeRecursion(node, word, index + 1);\n\n        if (shouldDeleteChild) \n        {\n            current.children.remove(ch);\n            return !current.flag && current.children.size() == 0;\n        }\n        return false;\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        Trie trie = new Trie();\n        while (true) \n        { \n            int op = Integer.valueOf(sc.nextLine().trim());\n            if (op == 1) \n            {\n                trie.insert(sc.nextLine());\n            } \n            else if (op == 2) \n            {\n                String word = sc.nextLine();\n                if (trie.search(word)) \n                {\n                    System.out.println(\"Found: \" + word);\n                } \n                else \n                {\n                    System.out.println(\"Not found: \" + word);\n                }\n            } \n            else if (op == 3) \n            {\n                trie.remove(sc.nextLine());\n            } \n            else if (op == 4) \n            {\n                break;\n            }\n        }\n    }\n}\n",
+    "python": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.flag = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word):\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.flag = True\n        print(f\"Inserted: {word}\")\n\n    def search(self, word):\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        if node.flag:\n            return True\n        else:\n            return False\n\n    def remove(self, word):\n        if not self.search(word):\n            print(f\"Not found: {word}\")\n            return\n        self.removeRecursion(self.root, word, 0)\n        print(f\"Removed: {word}\")\n\n    def removeRecursion(self, node, word, index):\n        if index == len(word):\n            node.flag = False\n            return len(node.children) == 0\n        ch = word[index]\n        deleteChild = self.removeRecursion(node.children[ch], word, index + 1)\n\n        if deleteChild:\n            del node.children[ch]\n            return not node.flag and len(node.children) == 0\n        return False\n\n# -------- MAIN --------\ntrie = Trie()\n\nwhile True:\n    op = int(input())\n    if op == 1:\n        word = input()\n        trie.insert(word)\n    elif op == 2:\n        word = input()\n        res=trie.search(word)\n        if res:\n            print(f\"Found: {word}\")\n        else:\n            print(f\"Not found: {word}\")\n    elif op == 3:\n        word = input()\n        trie.remove(word)\n    elif op == 4:\n        break\n"
+  },
+  {
+    "id": 21,
+    "title": "Huffman Coding",
+    "logicSummary": "Weights map individually driving min-heaps constructing shortest representations dynamically effectively structurally consistently. Heaviest characters sit proportionally closest to the roots effectively. Leaf paths represent optimized bits universally.",
+    "tc": "O(nlogn)",
+    "sc": "O(n)",
+    "viva": [
+      {
+        "q": "Why is a min-heap essential for Huffman Coding?",
+        "a": "It continually retrieves the explicitly two smallest weighted characters dynamically quickly strictly merging them mathematically, rebuilding frequency patterns accurately."
+      },
+      {
+        "q": "What type of data compression does it provide?",
+        "a": "Lossless prefix-free specifically, strictly optimizing sequence bits based purely on usage-frequency probabilities naturally."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass Node \n{\n    char ch;\n    int freq;\n    Node left;\n    Node right;\n    Node(char ch, int freq) \n    {\n        this.ch = ch;\n        this.freq = freq;\n        this.left = null;\n        this.right = null;\n    }\n}\n\nclass HuffmanCoding \n{\n\n    String[] chars;\n    int[] freq;\n    Node root;\n    Map<Character, String> codes;\n\n    HuffmanCoding(String[] chars, int[] freq) {\n        this.chars = chars;\n        this.freq = freq;\n        this.codes = new HashMap<>();\n    }\n    void buildTree() \n    {\n        PriorityQueue<Node> heap =new PriorityQueue<>((a, b) -> \n        {\n            if (a.freq == b.freq)\n                return a.ch - b.ch;\n            return a.freq - b.freq; \n        }\n        );\n\n        for (int i = 0; i < chars.length; i++) \n        {\n            heap.add(new Node(chars[i].charAt(0), freq[i]));\n        }\n\n        while (heap.size() > 1) \n        {\n            Node left = heap.poll();\n            Node right = heap.poll();\n            Node merged = new Node('$', left.freq + right.freq);\n            merged.left = left;\n            merged.right = right;\n            heap.add(merged);\n        }\n        root = heap.peek();\n    }\n\n    void generateCodes(Node node, String code) \n    {\n        if (node == null)\n            return;\n        if (node.left == null && node.right == null) \n        {\n            codes.put(node.ch, code);\n            return;\n        }\n        generateCodes(node.left, code + \"0\");\n        generateCodes(node.right, code + \"1\");\n    }\n\n    void display() \n    {\n        System.out.println(\"Huffman Codes:\");\n        for (String ch : chars) \n        {\n            char c = ch.charAt(0);\n            System.out.println(c + \": \" + codes.get(c));\n        }\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        sc.nextLine();\n        String[] chars = sc.nextLine().split(\" \");\n        String[] freqInput = sc.nextLine().split(\" \");\n        int[] freq = new int[n];\n        for (int i = 0; i < n; i++) \n        {\n            freq[i] = Integer.valueOf(freqInput[i]);\n        }\n\n        HuffmanCoding huffman = new HuffmanCoding(chars, freq);\n        huffman.buildTree();\n        huffman.generateCodes(huffman.root, \"\");\n        huffman.display();\n    }\n}\n",
+    "python": "import heapq\n\nclass Node:\n    def __init__(self, ch, freq):\n        self.ch = ch\n        self.freq = freq\n        self.left = None\n        self.right = None\n\n    # heap comparison\n    #__lt__ means \"less than\" (in-built dunder method)\n    #here __lt__ is used to compare the Node-objects\n    def __lt__(self, other):    \n        if self.freq == other.freq:\n            return self.ch < other.ch\n        return self.freq < other.freq\n\nclass HuffmanCoding:\n    def __init__(self, chars, freq):\n        self.chars = chars\n        self.freq = freq\n        self.root = None\n        self.codes = {}\n\n    def buildTree(self):\n        heap = []\n        for i in range(len(self.chars)):\n            heapq.heappush(heap, Node(self.chars[i], self.freq[i]))\n\n        while len(heap) > 1:\n            left = heapq.heappop(heap)\n            right = heapq.heappop(heap)\n            merged = Node('$', left.freq + right.freq)\n            merged.left = left\n            merged.right = right\n            heapq.heappush(heap, merged)\n        self.root = heap[0]\n\n    def generateCodes(self, node, code):\n        if not node:\n            return\n        if node.left is None and node.right is None:\n            self.codes[node.ch] = code\n            return\n        self.generateCodes(node.left, code + \"0\")\n        self.generateCodes(node.right, code + \"1\")\n\n    def display(self):\n        print(\"Huffman Codes:\")\n        for ch in self.chars:\n            print(f\"{ch}: {self.codes[ch]}\")\n\n#Main\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nn = int(input())\nchars = input().split()\nfreq = list(map(int, input().split()))\n\nhuffman = HuffmanCoding(chars, freq)\n\nhuffman.buildTree()\nhuffman.generateCodes(huffman.root, \"\")\nhuffman.display()\n"
+  },
+  {
+    "id": 22,
+    "title": "Distinct Substrings",
+    "logicSummary": "Iteratively sliding structural sequences continuously populates specific branch mappings directly precisely correctly. Suffix architectures inherently evaluate duplicate patterns overlapping naturally identically universally. Finding branches resolves unique sequences proportionally clearly effectively.",
+    "tc": "O(n^2)",
+    "sc": "O(n^2)",
+    "viva": [
+      {
+        "q": "How does a Trie improve finding distinct substrings compared to hashing?",
+        "a": "Inserting every suffix mathematically inherently covers every substring structurally. Tries intrinsically filter identical string fragments simultaneously overlapping natively."
+      },
+      {
+        "q": "What is the worst-case space complexity?",
+        "a": "The Trie effectively grows to O(n^2) branches structurally purely based on entirely dissimilar substring overlaps mathematically uniquely."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass TrieNode \n{\n    Map<Character,TrieNode> children;\n    TrieNode() \n    {\n        children= new HashMap<>();\n    }\n}\n\nclass DistinctSubstrings \n{\n    TrieNode root;\n    DistinctSubstrings() \n    {\n        root = new TrieNode();\n    }\n\n    public int countDistinct(String s) \n    {\n        int count = 0;\n        int n = s.length();\n        for (int i = 0; i < n; i++) \n        {\n            TrieNode node = root;\n            for (int j = i; j < n; j++) \n            {\n                char ch = s.charAt(j);\n                if (!node.children.containsKey(ch)) \n                {\n                    node.children.put(ch, new TrieNode());\n                    count++;\n                }\n                node = node.children.get(ch);\n            }\n        }\n        return count;\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n        DistinctSubstrings ob = new DistinctSubstrings();\n        System.out.println(ob.countDistinct(s));\n    }\n}\n",
+    "python": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n\nclass DistinctSubstrings:\n    def __init__(self):\n        self.root = TrieNode()\n    def count_subStrings(self, text):\n        count = 0\n        n = len(text)\n        for i in range(n):\n            node = self.root\n            for j in range(i, n):\n                ch = text[j]\n                if ch not in node.children:\n                    node.children[ch] = TrieNode()\n                    count += 1\n                node = node.children[ch]\n        return count\n\ns = input()\nob = DistinctSubstrings()\nprint(ob.count_subStrings(s))\n"
+  },
+  {
+    "id": 23,
+    "title": "No. of Words in a Trie",
+    "logicSummary": "Simple traversal correctly aggregates boolean flags validating termination specifically cleanly directly universally. Root iteration accumulates entirely validating sub-trees proportionately logically simply. Sequence totals calculate automatically precisely.",
+    "tc": "O(N)",
+    "sc": "O(1) extra",
+    "viva": [
+      {
+        "q": "How do you count nodes that represent the end of words?",
+        "a": "By recursively tracking and aggregating specifically a boolean property `isEnd` attached exactly to leaf or junction node paths strictly explicitly."
+      },
+      {
+        "q": "Can this be done iteratively?",
+        "a": "Yes, by systematically running a BFS queue natively inspecting every struct explicitly evaluating terminating counts independently quickly."
+      }
+    ],
+    "java": "import java.util.*;\nclass TrieNode \n{\n    Map<Character, TrieNode> children;\n    boolean flag;\n    public TrieNode() \n    {\n        children = new HashMap<>();\n        flag = false;\n    }\n}\n\nclass Trie \n{\n    TrieNode root= new TrieNode();\n    int Count=0;\n\n    void insert(String word) \n    {\n        TrieNode current = root;\n        for (int i = 0; i < word.length(); i++) \n        {\n            char ch = word.charAt(i);\n            TrieNode node = current.children.get(ch);\n            if (node == null) \n            {\n                node = new TrieNode();\n                current.children.put(ch, node);\n            }\n            current = node;\n        }\n\n        if (!current.flag) \n        {\n            current.flag = true;\n            Count++;\n        }\n    }\n\n    int UniqueWordCount() \n    {\n        return Count;\n    }\n}\n\npublic class Main \n{\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        Trie trie = new Trie();\n        int n = sc.nextInt();\n        for (int i = 0; i < n; i++) \n        {\n            String word = sc.next();\n            trie.insert(word);\n        }\n\n        System.out.println(trie.UniqueWordCount());\n    }\n}\n",
+    "python": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.flag = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n        self.count = 0\n\n    def insert(self, word):\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        if not node.flag:\n            node.flag = True\n            self.count += 1\n\n    def UniqueWords(self):\n        return self.count\n\nn = int(input())\ntrie = Trie()\nfor i in range(n):\n    trie.insert(input())\nprint(trie.UniqueWords())\n"
+  },
+  {
+    "id": 24,
+    "title": "Left View of Tree",
+    "logicSummary": "First nodes appearing strictly natively across any depths automatically define left views structurally visually effectively. Queue processing limits recording first elements reliably quickly. Equivalently recursive passing establishes maximal limits natively precisely.",
+    "tc": "O(n)",
+    "sc": "O(h)",
+    "viva": [
+      {
+        "q": "How does level mapping help in identifying the left view?",
+        "a": "It restricts queue passing explicitly to record uniquely the mathematically first processed entry of every specific horizontal visual layer physically."
+      },
+      {
+        "q": "Why might DFS be better suited than BFS here?",
+        "a": "DFS natively passes a physical depth counter cleanly, automatically saving the first encountered node proportionately tracking deeper branches organically efficiently."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass Node {\n    String data;\n    Node left;\n    Node right;\n\n    Node(String data) {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\nclass BST {\n    Node root;\n    public void insert(String data) {\n        if (root == null) {\n            root = new Node(data);\n        } else {\n            insertRecursion(root, data);\n        }\n    }\n    public void insertRecursion(Node node, String data) {\n        if (data.compareTo(node.data) < 0) \n        {\n            if (node.left == null) {\n                node.left = new Node(data);\n            } else {\n                insertRecursion(node.left, data);\n            }\n        } \n        else if (data.compareTo(node.data) > 0)\n        {\n            if (node.right == null) {\n                node.right = new Node(data);\n            } else {\n                insertRecursion(node.right, data);\n            }\n        }\n    }\n    public List<String> leftView() \n    {\n        List<String> result = new ArrayList<>();\n        if (root == null) return result;\n\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n\n        while (!q.isEmpty()) {\n            int levelSize = q.size();\n\n            for (int i = 0; i < levelSize; i++) {\n                Node node = q.poll();\n\n                if (i == 0) {\n                    result.add(node.data);\n                }\n\n                if (node.left != null) q.add(node.left);\n                if (node.right != null) q.add(node.right);\n            }\n        }\n        return result;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        sc.nextLine();\n\n        BST bst = new BST();\n\n        for (int i = 0; i < n; i++) \n        {\n            String keyword = sc.nextLine();\n            bst.insert(keyword);\n        }\n\n        List<String> leftViewResult = bst.leftView();\n        System.out.println(String.join(\" \", leftViewResult));\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.left = None\n        self.right = None\nclass BST:\n    def __init__(self):\n        self.root = None\n    def insert(self,data):\n        if self.root is None:\n            self.root= Node(data)\n        else:\n            self.insertRecursion(self.root,data)\n    def insertRecursion(self,node,data):\n        if data<node.data:\n            if node.left is None:\n                node.left=Node(data)\n            else:\n                self.insertRecursion(node.left,data)\n        if data>node.data:\n            if node.right is None:\n                node.right=Node(data)\n            else:\n                self.insertRecursion(node.right,data)\n\n    def leftView(self):\n        q = [self.root]\n        result = []\n        while q:\n            level_size = len(q)\n            for i in range(level_size):\n                node = q.pop(0)\n                if i == 0:\n                    result.append((node.data))\n                if node.left:\n                    q.append(node.left)\n                if node.right:\n                    q.append(node.right)\n        print(*result)\n\nn = int(input())\nbst = BST()\nfor i in range(n):\n    keyword = input()\n    bst.insert(keyword)\nbst.leftView()\n"
+  },
+  {
+    "id": 25,
+    "title": "Level Order Traversal",
+    "logicSummary": "Queue lists establish flat linear passing accurately systematically level by level completely perfectly carefully. Popped architectures record nodes directly uniformly appropriately systematically clearly universally. Widths evaluate equivalently smoothly dynamically natively.",
+    "tc": "O(n)",
+    "sc": "O(w)",
+    "viva": [
+      {
+        "q": "Why use a queue for level order traversal?",
+        "a": "A queue structurally forces a First-In-First-Out explicitly processing layers sequentially cleanly before reaching structurally deeper layers naturally inherently."
+      },
+      {
+        "q": "How do you preserve level boundaries?",
+        "a": "By specifically evaluating the queue length strictly natively before dequeueing children loops mathematically completely."
+      }
+    ],
+    "java": "import java.util.*;\n\nclass Node {\n    int data;\n    Node left, right;\n    Node(int data) {\n        this.data = data;\n        left = right = null;\n    }\n}\n\nclass BinaryTree {\n    int idx = 0;\n    public Node buildTree(List<Integer> arr) \n    {\n        if (idx >= arr.size() || arr.get(idx) == -1) \n        {\n            idx++;\n            return null;\n        }\n\n        Node root = new Node(arr.get(idx++));\n        root.left = buildTree(arr);\n        root.right = buildTree(arr);\n\n        return root;\n    }\n\n\n    public void levelOrder(Node root) {\n        if (root == null) return;\n\n        Queue<Node> q = new LinkedList<>();\n        q.add(root);\n\n        while (!q.isEmpty()) {\n            Node curr = q.poll();\n            System.out.print(curr.data + \" \");\n\n            if (curr.left != null) q.add(curr.left);\n            if (curr.right != null) q.add(curr.right);\n        }\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) \n    {\n        Scanner sc = new Scanner(System.in);\n        ArrayList<Integer> list = new ArrayList<>();\n\n        while (sc.hasNextInt()) \n        {\n            list.add(sc.nextInt());\n        }\n        BinaryTree t=new BinaryTree();\n        Node root = t.buildTree(list);\n        t.levelOrder(root);\n    }\n}\n",
+    "python": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.left = None\n        self.right = None\nclass BinaryTree:\n    def __init__(self):\n        self.idx = 0\n    def build_tree(self, arr):\n        if self.idx >= len(arr):\n            return None\n        if arr[self.idx] == -1:\n            self.idx+=1\n            return None\n        root = Node(arr[self.idx])\n        self.idx += 1\n        root.left = self.build_tree(arr)\n        root.right = self.build_tree(arr)\n        return root\n\n    def level_order(self, root):\n        q = []\n        q.append(root)\n        result = []\n        while q:\n            node = q.pop(0)\n            result.append((node.data))\n            if node.left:\n                q.append(node.left)\n            if node.right:\n                q.append(node.right)\n        print(*result)\n\nimport sys\narr = []\narr = list(map(int, sys.stdin.read().split()))\nbt = BinaryTree()\nroot = bt.build_tree(arr)\nbt.level_order(root)\n"
+  }
+]
