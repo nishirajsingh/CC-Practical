@@ -1,10 +1,20 @@
 import { useState } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { Clock, Database, BrainCircuit, MessageSquare, FileCode2 } from 'lucide-react'
+import { Clock, Database, BrainCircuit, MessageSquare, FileCode2, Copy, Check } from 'lucide-react'
 
 export default function ProblemDetail({ problem, isDarkMode }) {
   const [activeTab, setActiveTab] = useState('java')
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    const code = activeTab === 'java' ? problem.java : problem.python
+    if (code) {
+      navigator.clipboard.writeText(code)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in zoom-in-95 duration-500">
@@ -58,9 +68,19 @@ export default function ProblemDetail({ problem, isDarkMode }) {
       {/* Code Section */}
       <div className="bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700/50 shadow-lg dark:shadow-2xl overflow-hidden ring-1 ring-slate-900/5 dark:ring-white/5 transition-colors">
         <div className="flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/50 transition-colors">
-          <div className="flex items-center space-x-2">
-            <FileCode2 className="text-emerald-500 dark:text-emerald-400" size={20} />
-            <span className="font-semibold text-slate-800 dark:text-white">Source Code</span>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <FileCode2 className="text-emerald-500 dark:text-emerald-400" size={20} />
+              <span className="font-semibold text-slate-800 dark:text-white">Source Code</span>
+            </div>
+            <button
+              onClick={handleCopy}
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 bg-slate-100/80 hover:bg-slate-200/80 dark:text-slate-400 dark:hover:text-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 transition-all border border-slate-200/50 dark:border-slate-700/50 shadow-sm"
+              aria-label="Copy code"
+            >
+              {copied ? <Check size={16} className="text-emerald-500 dark:text-emerald-400" /> : <Copy size={16} />}
+              <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy Code'}</span>
+            </button>
           </div>
           <div className="flex space-x-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-lg transition-colors">
             <button
